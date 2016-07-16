@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset ="utf-8" />
+    <title>依赖树搜索引擎</title>
+    <style>
+    form {margin:0;padding:0}
+    html,
+    body {
+      font-family: 微软雅黑;
+      overflow: hidden;
+    }
+    .content {
+      width: 420px;
+      position: absolute;
+      left: 50%;
+      top: 40%;
+      margin-left: -200px;
+      margin-top: -40px;
+      text-align: center;
+      padding:0 10px;
+    }
+    .content2 {
+      width: 420px;
+      position: absolute;
+      text-align: center;
+      left: 50%;
+      top: 56%;
+      margin-left: -200px;
+      margin-top: -40px;
+      text-align: center;
+      padding:0 10px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 2px;
+      font-size: 14px;
+      font-family: 微软雅黑;
+      background: #2DD1AF;
+      color: #fff;
+      outline: none;
+      -moz-border-radius: 0px 4px 4px 0px;
+      -webkit-border-radius: 0px 4px 4px 0px;
+      border-radius: 0px 4px 4px 0px;
+      -webkit-transition: background 0.3s ease-in-out;
+      -moz-transition: background 0.3s ease-in-out;
+      transition: background 0.3s ease-in-out;
+    }
+    .contenth2 {
+      position: absolute;
+      text-align: center;
+      margin-left: -200px;
+      margin-top: -40px;
+      text-align: center;
+      left: 56%;
+      top: 30%;
+      color: #666;
+    }
+    .search-text {
+      display: block;
+      float: left;
+      height: 38px;
+      width: 309px;
+      font-size: 16px;
+      color: #777;
+      outline: none;
+      padding: 0 0 0 10px;
+      margin: 0;
+      border: 1px solid #b4b4b4;
+      border-right-width: 0;
+      letter-spacing: 1px;
+    }
+    .search-text:hover {
+      border: 1px solid #888;
+      border-right-width: 0;
+    }
+    .search-text:focus {
+      border: 1px solid #2DD1AF;
+      border-right-width: 0;
+    }
+    .search-btn {
+      display: block;
+      height: 40px;
+      width: 80px;
+      padding: 0;
+      float: left;
+      margin: 0;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 2px;
+      font-size: 14px;
+      font-family: 微软雅黑;
+      background: #2DD1AF;
+      color: #fff;
+      outline: none;
+      -moz-border-radius: 0px 4px 4px 0px;
+      -webkit-border-radius: 0px 4px 4px 0px;
+      border-radius: 0px 4px 4px 0px;
+      -webkit-transition: background 0.3s ease-in-out;
+      -moz-transition: background 0.3s ease-in-out;
+      transition: background 0.3s ease-in-out;
+    }
+
+    .search-btn:hover {
+      background: #29BC95;
+    }
+    #search-suggest {
+      position: absolute;
+      left: 50%;
+      top: 40%;
+      margin-left: -190px;
+      margin-top: 70px;
+      display: none;
+      background: #fff;
+    }
+    #search-suggest ul {
+      list-style: none;
+      width: 318px;
+      border: 1px solid #b4b4b4;
+      padding: 0;
+      margin: 0;
+      box-shadow: 1px 2px 10px rgba(0, 0, 0, 0.15);
+    }
+    #search-suggest ul li {
+      padding: 3px 10px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    #search-suggest ul li:hover {
+      background: #eee;
+    }
+    </style>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js">
+    </script>
+    <script>
+    var foo = function(data){
+      //json_str = JSON.stringify(data);
+      //document.getElementsByTagName("body")[0].innerHTML += json_str;
+        result = JSON.stringify(data, null, " ");
+        $("#result pre").text(result);
+    };
+    function analyze() {
+        var base     = "http://api.ltp-cloud.com/analysis/?";
+        var api_key  = "F7X4C2E5Fq1ZDbkFfNuJLJWAbpPNTDTNEQjDDZ9i";
+        var pattern  = $("#pattern :selected").val();
+        var text     = $("#text").val();
+        var format   = "json";
+        var uri      = (base
+                        + "api_key="   + api_key   + "&text="   + text
+                        + "&pattern="  + pattern   + "&format=" + format);
+        $.ajax({
+                type: "get",
+                async: false,
+                dataType: 'jsonp',
+                // if you specify the callback function , the result can be
+                // captured in the callback function and the ajax success
+                // at the same time
+                jsonpCallback : "foo",
+                url : uri,
+                success: function(data) {
+                    //reulst = JSON.stringify(data);
+                    //$("#result").text(result);
+                },
+                error : function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status
+                         + "-"
+                         + XMLHttpRequest.readyState
+                         + "-"
+                         + textStatus);
+                }
+        });
+    }
+    </script>
+</head>
+
+<body>
+	<h2 class = "contenth2">
+    依赖树搜索引擎</h2>
+    <form class = "content">
+  <input type="text" id="text" size=30 class="search-text" s placeholder="请输入搜索内容"/>
+
+    <select id="pattern" class="search-text">
+        <option value="ws">Word Segment</option>
+        <option value="pos">POS Tagging</option>
+        <option value="dp">Dependency Parsing</option>
+        <option value="ner">Named Entity Recognization</option>
+        <option value="srl">Semantic Role Labeling</option>
+    </select>
+</form>
+    <button class = "content2" onclick="analyze()" >搜索</button>
+
+    <p><div id="result"><pre></pre></div></p>
+
+</body>
+</html>
